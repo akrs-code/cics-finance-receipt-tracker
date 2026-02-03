@@ -2,7 +2,7 @@ import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 
 const BORDER_COLOR = "#000";
 const BORDER_WIDTH = 1;
-const POCKET_SIZE = [250, 390];
+const POCKET_SIZE = [240, 400];
 
 const styles = StyleSheet.create({
     page: {
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 
 export const ReceiptContent = ({ data }) => {
     const items = data.items || [];
-    const totalAmount = items.reduce((sum, item) => sum + Number(item.quantity) * Number(item.amount), 0);
+    const totalAmount = items.reduce((sum, item) => sum + Number(item.quantity), 0);
     const emptyRows = Array(Math.max(0, 6 - items.length)).fill(0);
 
     return (

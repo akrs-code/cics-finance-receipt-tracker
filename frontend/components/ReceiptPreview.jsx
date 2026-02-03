@@ -2,7 +2,7 @@ import { Page, Text, View, Document, StyleSheet, PDFViewer } from "@react-pdf/re
 
 const BORDER_COLOR = "#000";
 const BORDER_WIDTH = 1;
-const POCKET_SIZE = [240, 390]; 
+const POCKET_SIZE = [240, 420];
 
 const styles = StyleSheet.create({
   page: {
@@ -95,9 +95,20 @@ const styles = StyleSheet.create({
     borderRight: BORDER_WIDTH,
     padding: 2,
   },
+  sigCellName: {
+    flex: 1,
+    borderRight: BORDER_WIDTH,
+    textAlign: "center",
+    padding: 2,
+  },
   sigCellLast: {
     flex: 1,
     padding: 2,
+  },
+  sigCellLastName: {
+    flex: 1,
+    padding: 2,
+    textAlign:"center"
   },
 });
 
@@ -167,7 +178,7 @@ const ReceiptPDF = ({ data }) => {
           </View>
 
           <View style={styles.sigRow}>
-            <View style={styles.sigCell}><Text> </Text></View>
+            <View style={styles.sigCell}><Text></Text></View>
             <View style={styles.sigCell}><Text>Certified correct:</Text></View>
             <View style={styles.sigCellLast}><Text>Noted by:</Text></View>
           </View>
@@ -180,8 +191,12 @@ const ReceiptPDF = ({ data }) => {
 
           <View style={styles.sigRow}>
             <View style={styles.sigCell}><Text style={{ fontWeight: "bold" }}>Printed Name:</Text></View>
-            <View style={styles.sigCell}><Text>{data.certifiedBy?.name}</Text></View>
-            <View style={styles.sigCellLast}></View>
+            <View style={styles.sigCellName}><Text>{data.certifiedBy?.name}</Text></View>
+            <View style={styles.sigCellLastName}>
+              <Text>
+                Sittie Aisha C.{"\n"}Abdulmanan
+              </Text>
+            </View>
           </View>
 
           <View style={styles.sigRow}>
