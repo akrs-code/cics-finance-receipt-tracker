@@ -34,38 +34,51 @@ export default function Login() {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center bg-neutral-900'>
+    <div className="min-h-screen flex items-center justify-center bg-neutral-900 font-inter">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-card rounded-2xl shadow-xl p-10"
+        className="w-full max-w-md bg-button/20 border border-neutral-800 rounded-3xl shadow-card p-10 relative"
       >
-       <img src="/logo.png" alt="Logo" className="h-24 w-24 mx-auto -mt-20" />
-        <div className="mb-4">
-          <label className="block text-xs font-bold font-inter mb-1">Email</label>
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2">
+          <img 
+            src="/logo.png" 
+            alt="Logo" 
+            className="h-24 w-24 object-contain filter drop-shadow-2xl" 
+          />
+        </div>
+        
+        <div className="mb-4 mt-10">
+          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1 ml-1">
+            Email Address
+          </label>
           <input
             type="email"
             name="email"
             placeholder="example@gmail.com"
             required
-            className="w-full px-4 py-2 rounded-xl font-inter shadow-card text-sm"
+            autoComplete="email"
+            className="w-full px-4 py-3 rounded-xl bg-button text-white placeholder:text-neutral-600 shadow-card text-sm focus:outline-none focus:ring-1 ring-neutral-500 transition-all"
             onChange={handleChange}
-            />
+          />
         </div>
 
         <div className="mb-6">
-          <label className="block text-xs font-bold font-inter mb-1">Password</label>
+          <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-1 ml-1">
+            Password
+          </label>
           <input
             type="password"
             name="password"
-            placeholder="*********"
+            placeholder="•••••••••"
             required
-            className="w-full px-4 py-2 rounded-xl font-inter shadow-card text-sm"
+            autoComplete="current-password"
+            className="w-full px-4 py-3 rounded-xl bg-button text-white placeholder:text-neutral-600 shadow-card text-sm focus:outline-none focus:ring-1 ring-neutral-500 transition-all"
             onChange={handleChange}
-            />
+          />
         </div>
 
         {error && (
-          <div className="mb-4 rounded-lg bg-red-100 text-red-700 px-4 py-2 font-inter text-sm text-center">
+          <div className="mb-6 rounded-xl bg-red-900/20 border border-red-900/50 text-red-400 px-4 py-2 text-xs font-bold text-center uppercase tracking-wide">
             {error}
           </div>
         )}
@@ -73,10 +86,16 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-button px-4 py-2 rounded-xl font-inter text-white shadow-card font-bold hover:opacity-90 text-sm disabled:opacity-50 "
-          >
-          {loading ? "Logging in..." : "Login"}
+          className="w-full bg-card py-3 rounded-xl text-button shadow-card font-bold hover:bg-card/80 transition-all text-sm disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98]"
+        >
+          {loading ? "Authenticating..." : "Login to System"}
         </button>
+        
+        <div className="mt-8 text-center">
+          <p className="text-[10px] text-neutral-600 font-bold uppercase tracking-tighter">
+            Authorized Personnel Only
+          </p>
+        </div>
       </form>
     </div>
   );
