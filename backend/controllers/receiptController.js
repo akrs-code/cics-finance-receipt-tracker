@@ -4,9 +4,9 @@ export const createReceipt = async (req, res) => {
     try {
         if (!req.user) return res.status(400).json({ error: "Unauthorized Access" })
 
-        const { name, position, date, receipt_no, items, purpose, certifiedBy } = req.body
+        const { name, position, date, receipt_no, items, purpose, certifiedBy, category } = req.body;
 
-        if (!name || !position || !date || !receipt_no || !items || items.length === 0 || !purpose) {
+        if (!name || !position || !date || !receipt_no || !items || items.length === 0 || !purpose || !category) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
@@ -16,10 +16,8 @@ export const createReceipt = async (req, res) => {
             }
         }
 
-        const totalAmount = items.reduce(
-            (sum, item) => sum + (item.amount * item.quantity),
-            0
-        );
+        const totalAmount = items.reduce((sum, item) => sum + Number(item.amount), 0);
+
 
         const receipt = await Receipt.create({
             name,
@@ -29,6 +27,7 @@ export const createReceipt = async (req, res) => {
             items,
             totalAmount,
             purpose,
+           category: category || "Uncategorized",
             certifiedBy: certifiedBy || {},
             createdBy: req.user._id,
         })
@@ -48,6 +47,7 @@ export const getReceipts = async (req, res) => {
         if (req.query.date) filter.date = req.query.date;
         if (req.query.receipt_no) filter.receipt_no = req.query.receipt_no;
         if (req.query.name) filter.name = req.query.name;
+        if (req.query.category) filter.category = req.query.category;
 
         const receipts = await Receipt.find(filter).sort({ createdAt: -1 });
 
@@ -84,7 +84,7 @@ export const getReceiptById = async (req, res) => {
 export const updateReceipt = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, position, date, receipt_no, items, purpose, certifiedBy } = req.body
+        const { name, position, date, receipt_no, items, purpose, certifiedBy, category } = req.body
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(401).json({ error: "Invalid Receipt ID" })
@@ -109,6 +109,7 @@ export const updateReceipt = async (req, res) => {
                 receipt.totalAmount = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
             }
             if (purpose) receipt.purpose = purpose;
+            if (category) receipt.category = category;
 
             await receipt.save();
 
