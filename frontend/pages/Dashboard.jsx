@@ -72,19 +72,17 @@ export default function Dashboard() {
 
       <hr className="w-full max-w-5xl border-neutral-800" />
 
-      {/* --- ACTIONS & FILTERS --- */}
+  
       <div className="w-full max-w-5xl flex flex-wrap gap-4 items-center justify-start mx-auto">
         <input
           placeholder="Search Name..."
-          className="flex-1 min-w-[150px] px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
+          className="flex-1 min-w-37.5 px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
           value={filters.name}
           onChange={(e) => setFilters({ ...filters, name: e.target.value })}
         />
-
-        {/* Added Receipt No filter back */}
         <input
           placeholder="Receipt No"
-          className="flex-1 min-w-[120px] px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
+          className="flex-1 min-w-30 px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
           value={filters.receipt_no}
           onChange={(e) => setFilters({ ...filters, receipt_no: e.target.value })}
         />
@@ -120,7 +118,6 @@ export default function Dashboard() {
           </PDFDownloadLink>
         )}
 
-        {/* Clear Filter - Right side end */}
         {filters.category && (
           <button 
             onClick={() => setFilters({ ...filters, category: "" })}
@@ -131,9 +128,8 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* --- TABLE SECTION --- */}
       <div className="w-full max-w-7xl overflow-x-auto mx-auto pb-10">
-        <div className="min-w-[1000px] bg-button/20 space-y-2 rounded-2xl p-2">
+        <div className="min-w-250 bg-button/20 space-y-2 rounded-2xl p-2">
           <div className="grid grid-cols-12 gap-2 bg-button text-white p-4 font-bold text-xs uppercase tracking-widest rounded-t-xl border-b border-neutral-700">
             <div className="col-span-1 text-center">Select</div>
             <div className="col-span-1 text-left">No.</div>
