@@ -16,7 +16,7 @@ export const createReceipt = async (req, res) => {
             }
         }
 
-        const totalAmount = items.reduce((sum, item) => sum + Number(item.amount), 0);
+         const totalAmount = items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.amount)), 0);
 
 
         const receipt = await Receipt.create({
