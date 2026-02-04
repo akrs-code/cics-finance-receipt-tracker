@@ -2,11 +2,11 @@ import { Page, Text, View, Document, StyleSheet, PDFViewer } from "@react-pdf/re
 
 const BORDER_COLOR = "#000";
 const BORDER_WIDTH = 1;
-const POCKET_SIZE = [240, 420];
+const POCKET_SIZE = [260, 450];
 
 const styles = StyleSheet.create({
   page: {
-    padding: 8,
+    padding: 16,
     backgroundColor: "#fff",
     fontFamily: "Helvetica",
     fontSize: 8,
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     borderBottom: BORDER_WIDTH,
   },
   title: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: "bold",
     textAlign: "center",
     paddingHorizontal: 18,
@@ -150,7 +150,7 @@ const ReceiptPDF = ({ data }) => {
                 {item.quantity} {item.name}
               </Text>
               <Text style={[styles.colAmount, { fontWeight: "normal" }]}>
-                {item.amount}
+                {(Number(item.amount) * Number(item.quantity)).toFixed(2)}
               </Text>
             </View>
           ))}
