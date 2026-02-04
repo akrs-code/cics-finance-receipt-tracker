@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [filters, setFilters] = useState({ date: "", receipt_no: "", name: "", category: "" });
   const [selected, setSelected] = useState([]);
   const [sortOrder, setSortOrder] = useState("desc");
+  const [paperSize, setPaperSize] = useState("LONG");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,14 +72,14 @@ export default function Dashboard() {
 
       <hr className="w-full max-w-5xl border-neutral-800" />
 
-  
       <div className="w-full max-w-5xl flex flex-wrap gap-4 items-center justify-start mx-auto">
         <input
           placeholder="Search Name..."
-          className="flex-1 min-w-37.5 px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
+          className="flex-1 min-w-37.5px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
           value={filters.name}
           onChange={(e) => setFilters({ ...filters, name: e.target.value })}
         />
+        
         <input
           placeholder="Receipt No"
           className="flex-1 min-w-30 px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
@@ -92,6 +93,15 @@ export default function Dashboard() {
           value={filters.date}
           onChange={(e) => setFilters({ ...filters, date: e.target.value })}
         />
+
+        <select 
+          value={paperSize}
+          onChange={(e) => setPaperSize(e.target.value)}
+          className="px-4 py-2 rounded-xl shadow-card text-[11px] font-bold uppercase tracking-widest bg-button text-neutral-300 focus:ring-2 ring-card outline-none cursor-pointer appearance-none border-none min-w-30"
+        >
+          <option value="A4">A4 Paper</option>
+          <option value="LONG">Long Bond</option>
+        </select>
 
         <button
           onClick={() => setSortOrder((prev) => (prev === "asc" ? "desc" : "asc"))}
@@ -109,8 +119,8 @@ export default function Dashboard() {
 
         {selected.length > 0 && (
           <PDFDownloadLink
-            document={<BulkDownloadPDF receipts={receipts.filter((receipt) => selected.includes(receipt._id))} />}
-            fileName="selected-receipts.pdf"
+            document={<BulkDownloadPDF receipts={receipts.filter((r) => selected.includes(r._id))} paperType={paperSize} />}
+            fileName={`receipts-${paperSize.toLowerCase()}.pdf`}
             className="px-4 py-2 rounded-xl text-white shadow-card font-bold bg-green-600 hover:bg-green-500 text-sm transition-all"
           >
             {({ loading }) => (loading ? "..." : `PDF (${selected.length})`)}
@@ -120,7 +130,7 @@ export default function Dashboard() {
         {filters.category && (
           <button 
             onClick={() => setFilters({ ...filters, category: "" })}
-            className="px-4 py-2 rounded-xl text-white shadow-card font-bold bg-red-600/20 border border-red-600/50 hover:bg-red-600 hover:text-white transition-all text-sm flex items-center gap-2 ml-auto"
+            className="px-4 py-2 rounded-xl text-white shadow-card font-bold bg-red-600/20 border border-red-600/50 hover:bg-red-600 transition-all text-sm flex items-center gap-2 ml-auto"
           >
             <span>✕ Clear {filters.category}</span>
           </button>
