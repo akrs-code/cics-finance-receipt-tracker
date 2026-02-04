@@ -8,6 +8,7 @@ export default function Receipts() {
   const navigate = useNavigate();
   const { addReceipt } = useReceipt();
 
+  const [paperSize, setPaperSize] = useState("LONG");
   const [receiptData, setReceiptData] = useState({
     name: "",
     position: "",
@@ -39,6 +40,7 @@ export default function Receipts() {
 
       const finalData = {
         ...receiptData,
+        paperSize: paperSize,
         category: receiptData.category.trim() || "Uncategorized"
       };
 
@@ -53,7 +55,7 @@ export default function Receipts() {
   };
 
   return (
-    <div className="h-screen bg-neutral-900 p-4 lg:p-6 font-inter overflow-hidden">
+    <div className="h-screen bg-neutral-900 p-4 lg:p-6 font-inter overflow-hidden text-white">
       <div className="max-w-400 h-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <div className="lg:col-span-5 h-full flex flex-col min-h-0">
@@ -91,7 +93,19 @@ export default function Receipts() {
         <div className="lg:col-span-7 h-full min-h-0">
           <div className="bg-button/10 rounded-3xl shadow-card border border-neutral-800 h-full flex flex-col overflow-hidden">
             <div className="p-3 border-b border-neutral-800 bg-button/30 flex justify-between items-center shrink-0">
-              <h2 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest pl-2">Live Receipt Preview</h2>
+              <div className="flex items-center gap-4">
+                <h2 className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest pl-2">Live Receipt Preview</h2>
+                
+                <select 
+                  value={paperSize}
+                  onChange={(e) => setPaperSize(e.target.value)}
+                  className="bg-neutral-900 text-neutral-400 text-[9px] font-bold uppercase tracking-widest px-2 py-1 rounded border border-neutral-700 outline-none focus:border-neutral-500 cursor-pointer"
+                >
+                  <option value="A4">A4 Size</option>
+                  <option value="LONG">Long Bond</option>
+                </select>
+              </div>
+
               <div className="flex gap-1.5 pr-2">
                 <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
                 <div className="w-2 h-2 rounded-full bg-yellow-500/50"></div>
@@ -99,9 +113,12 @@ export default function Receipts() {
               </div>
             </div>
     
-            <div className="flex-1 overflow-y-auto bg-neutral-800/50 custom-scrollbar p-4">
-              <div className="max-w-150 mx-auto origin-top transform scale-[0.95] lg:scale-100">
-                <ReceiptPreview data={receiptData} />
+            <div className="flex-1 overflow-y-auto bg-neutral-800/50 custom-scrollbar p-4 flex justify-center">
+              <div 
+                className={`transition-all duration-300 origin-top transform scale-[0.95] lg:scale-100 shadow-2xl mb-10
+                  ${paperSize === 'A4' ? 'w-148.75' : 'w-153'}`} 
+              >
+                <ReceiptPreview data={receiptData} paperSize={paperSize} />
               </div>
             </div>
           </div>
