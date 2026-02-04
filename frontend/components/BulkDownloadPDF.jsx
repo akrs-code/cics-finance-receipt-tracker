@@ -4,7 +4,7 @@ import { ReceiptContent } from "./ReceiptContent";
 
 const LONG_BOND_LANDSCAPE = [936, 612];
 
-const RECEIPT_MARGIN = 10;
+const RECEIPT_MARGIN = 40;
 
 const RECEIPT_WIDTH = 240;
 const RECEIPT_HEIGHT = 400;
