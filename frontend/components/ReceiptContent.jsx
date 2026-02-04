@@ -1,14 +1,14 @@
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
+import { Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const BORDER_COLOR = "#000";
 const BORDER_WIDTH = 1;
-const POCKET_SIZE = [240, 400];
+const POCKET_SIZE = [260, 450];
 
 const styles = StyleSheet.create({
     page: {
         width: POCKET_SIZE[0],
         height: POCKET_SIZE[1],
-        padding: 8,
+        padding: 16,
         backgroundColor: "#fff",
         fontFamily: "Helvetica",
         fontSize: 8,
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         borderBottom: BORDER_WIDTH,
     },
     title: {
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: "bold",
         textAlign: "center",
         paddingHorizontal: 18,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
 
 export const ReceiptContent = ({ data }) => {
     const items = data.items || [];
-    const totalAmount = items.reduce((sum, item) => sum + Number(item.quantity), 0);
+    const totalAmount = items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.amount)), 0);
     const emptyRows = Array(Math.max(0, 6 - items.length)).fill(0);
 
     return (
@@ -140,7 +140,7 @@ export const ReceiptContent = ({ data }) => {
                             {item.quantity} {item.name}
                         </Text>
                         <Text style={[styles.colAmount, { fontWeight: "normal" }]}>
-                            {item.amount}
+                            {(Number(item.amount) * Number(item.quantity)).toFixed(2)}
                         </Text>
                     </View>
                 ))}
