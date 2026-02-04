@@ -36,11 +36,11 @@ export default function Dashboard() {
 
   const handleRowClick = (id) => navigate(`/receipt/${id}`);
 
-  const filteredReceipts = receipts.filter((r) => {
-    const matchName = filters.name ? r.name?.toLowerCase().includes(filters.name.toLowerCase()) : true;
-    const matchReceiptNo = filters.receipt_no ? r.receipt_no?.toString().includes(filters.receipt_no) : true;
-    const matchDate = filters.date ? r.date === filters.date : true;
-    const matchCategory = filters.category ? r.category === filters.category : true;
+  const filteredReceipts = receipts.filter((receipt) => {
+    const matchName = filters.name ? receipt.name?.toLowerCase().includes(filters.name.toLowerCase()) : true;
+    const matchReceiptNo = filters.receipt_no ? receipt.receipt_no?.toString().includes(filters.receipt_no) : true;
+    const matchDate = filters.date ? receipt.date === filters.date : true;
+    const matchCategory = filters.category ? receipt.category === filters.category : true;
 
     return matchName && matchReceiptNo && matchDate && matchCategory;
   });
@@ -53,7 +53,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-neutral-900 p-6 flex flex-col items-center text-white gap-8 font-inter">
-      {/* --- STATS SECTION --- */}
       <div className="w-full max-w-5xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {categoryStats.map((cat) => (
           <div
@@ -110,7 +109,7 @@ export default function Dashboard() {
 
         {selected.length > 0 && (
           <PDFDownloadLink
-            document={<BulkDownloadPDF receipts={receipts.filter((r) => selected.includes(r._id))} />}
+            document={<BulkDownloadPDF receipts={receipts.filter((receipt) => selected.includes(receipt._id))} />}
             fileName="selected-receipts.pdf"
             className="px-4 py-2 rounded-xl text-white shadow-card font-bold bg-green-600 hover:bg-green-500 text-sm transition-all"
           >
@@ -142,29 +141,29 @@ export default function Dashboard() {
           </div>
 
           {sortedReceipts.length > 0 ? (
-            sortedReceipts.map((r) => (
+            sortedReceipts.map((receipt) => (
               <div
-                key={r._id}
+                key={receipt._id}
                 className="grid grid-cols-12 gap-2 p-4 text-sm items-center bg-button/40 hover:bg-neutral-800 cursor-pointer rounded-lg transition-colors"
-                onClick={() => handleRowClick(r._id)}
+                onClick={() => handleRowClick(receipt._id)}
               >
                 <div className="col-span-1 text-center" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
-                    checked={selected.includes(r._id)}
-                    onChange={() => toggleSelect(r._id)}
+                    checked={selected.includes(receipt._id)}
+                    onChange={() => toggleSelect(receipt._id)}
                     className="w-4 h-4 rounded accent-card"
                   />
                 </div>
-                <div className="col-span-1 text-neutral-400">#{r.receipt_no}</div>
-                <div className="col-span-2 text-white font-medium">{r.name}</div>
-                <div className="col-span-2 text-neutral-400">{r.date}</div>
-                <div className="col-span-1 font-bold text-white">₱{(r.totalAmount || 0).toLocaleString()}</div>
-                <div className="col-span-2 text-neutral-300 italic">{r.certifiedBy?.name || "-"}</div>
-                <div className="col-span-2 text-neutral-400 truncate">{r.purpose || "-"}</div>
+                <div className="col-span-1 text-neutral-400">#{receipt.receipt_no}</div>
+                <div className="col-span-2 text-white font-medium">{receipt.name}</div>
+                <div className="col-span-2 text-neutral-400">{receipt.date}</div>
+                <div className="col-span-1 font-bold text-white">₱{(receipt.totalAmount || 0).toLocaleString()}</div>
+                <div className="col-span-2 text-neutral-300 italic">{receipt.certifiedBy?.name || "-"}</div>
+                <div className="col-span-2 text-neutral-400 truncate">{receipt.purpose || "-"}</div>
                 <div className="col-span-1">
                   <span className="px-2 py-1 bg-neutral-700 rounded-md text-[10px] uppercase font-bold text-neutral-300">
-                    {r.category || "Misc"}
+                    {receipt.category || "Misc"}
                   </span>
                 </div>
               </div>
