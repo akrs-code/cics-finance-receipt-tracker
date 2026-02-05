@@ -147,7 +147,7 @@ const ReceiptPDF = ({ data }) => {
           {items.map((item, i) => (
             <View key={i} style={styles.tableRow}>
               <Text style={[styles.colParticular, { fontWeight: "normal" }]}>
-                {item.quantity} {item.name}
+               {item.quantity} {item.unit || 'pc'} {item.name}
               </Text>
               <Text style={[styles.colAmount, { fontWeight: "normal" }]}>
                 {(Number(item.amount) * Number(item.quantity)).toFixed(2)}
