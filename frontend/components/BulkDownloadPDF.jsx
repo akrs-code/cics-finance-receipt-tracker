@@ -2,17 +2,30 @@ import React from "react";
 import { Document, Page, View } from "@react-pdf/renderer";
 import { ReceiptContent } from "./ReceiptContent";
 
-const LONG_BOND_LANDSCAPE = [936, 612];
+const PAPER_CONFIGS = {
+  A4: {
+    size: [841.89, 595.28], 
+    label: "A4"
+  },
+  LONG: {
+    size: [936, 612], 
+    label: "Long Bond"
+  }
+};
 
-const RECEIPT_MARGIN = 40;
-
+const RECEIPT_MARGIN = 15;
 const RECEIPT_WIDTH = 240;
 const RECEIPT_HEIGHT = 400;
 
-const BulkDownloadPDF = ({ receipts }) => {
-  const receiptsPerRow = Math.floor((LONG_BOND_LANDSCAPE[0] - RECEIPT_MARGIN) / (RECEIPT_WIDTH + RECEIPT_MARGIN));
-  const receiptsPerCol = Math.floor((LONG_BOND_LANDSCAPE[1] - RECEIPT_MARGIN) / (RECEIPT_HEIGHT + RECEIPT_MARGIN));
+const BulkDownloadPDF = ({ receipts, paperType = "LONG" }) => {
+  const selectedPaper = PAPER_CONFIGS[paperType] || PAPER_CONFIGS.LONG;
+  const pageWidth = selectedPaper.size[0];
+  const pageHeight = selectedPaper.size[1];
+
+  const receiptsPerRow = Math.floor((pageWidth - RECEIPT_MARGIN) / (RECEIPT_WIDTH + RECEIPT_MARGIN));
+  const receiptsPerCol = Math.floor((pageHeight - RECEIPT_MARGIN) / (RECEIPT_HEIGHT + RECEIPT_MARGIN));
   const receiptsPerPage = receiptsPerRow * receiptsPerCol;
+
   const pages = [];
   for (let i = 0; i < receipts.length; i += receiptsPerPage) {
     pages.push(receipts.slice(i, i + receiptsPerPage));
@@ -23,8 +36,13 @@ const BulkDownloadPDF = ({ receipts }) => {
       {pages.map((pageReceipts, pageIndex) => (
         <Page
           key={pageIndex}
-          size={LONG_BOND_LANDSCAPE}
-          style={{ padding: RECEIPT_MARGIN, flexDirection: "row", flexWrap: "wrap" }}
+          size={selectedPaper.size}
+          style={{ 
+            padding: RECEIPT_MARGIN, 
+            flexDirection: "row", 
+            flexWrap: "wrap",
+            backgroundColor: "#FFFFFF" 
+          }}
         >
           {pageReceipts.map((receipt, index) => (
             <View
