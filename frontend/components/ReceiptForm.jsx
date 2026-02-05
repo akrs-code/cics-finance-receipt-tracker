@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { SquareX, Plus } from "lucide-react";
 
 export default function ReceiptForm({ data, onChange }) {
-  const [newItem, setNewItem] = useState({ name: "", amount: "", quantity: "" });
+  const [newItem, setNewItem] = useState({ name: "", amount: "", quantity: "", unit: "pc" });
+  const [selectedSize, setSelectedSize] = useState("A4");
   const inputsRef = useRef([]);
 
   const councilMembers = [
@@ -84,7 +85,7 @@ export default function ReceiptForm({ data, onChange }) {
         quantity: Number(newItem.quantity)
       }],
     });
-    setNewItem({ name: "", amount: "", quantity: "" });
+    setNewItem({ name: "", amount: "", quantity: "", unit: "pc" });
   };
 
   const handleRemoveItem = (index) => {
@@ -95,7 +96,7 @@ export default function ReceiptForm({ data, onChange }) {
 
   return (
     <div className="bg-neutral-900 p-6 flex flex-col items-center text-white gap-6 font-inter">
-      <div className="w-full max-w-4xl bg-button/30 p-8 rounded-2xl shadow-card space-y-8">
+      <div className="w-full max-w-5xl bg-button/30 p-8 rounded-2xl shadow-card space-y-8">
         <div>
           <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
             Receipt Info
@@ -158,46 +159,65 @@ export default function ReceiptForm({ data, onChange }) {
           <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
             Items
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-            <div className="sm:col-span-1">
-              <label className="text-xs font-bold block mb-1">Item Name</label>
-              <input
-                placeholder="Item name"
-                name="name"
-                value={newItem.name}
-                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
-                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-              />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold block mb-1">Item</label>
+                <input
+                  placeholder="Item name"
+                  value={newItem.name}
+                  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-bold block mb-1">Amount</label>
+                <input
+                  type="number"
+                  placeholder="0.00"
+                  value={newItem.amount}
+                  onChange={(e) => setNewItem({ ...newItem, amount: e.target.value })}
+                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-xs font-bold block mb-1">Amount</label>
-              <input
-                type="number"
-                placeholder="0.00"
-                name="amount"
-                value={newItem.amount}
-                onChange={(e) => setNewItem({ ...newItem, amount: e.target.value })}
-                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-              />
-            </div>
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <label className="text-xs font-bold block mb-1">Qty</label>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs font-bold block mb-1">Quantity</label>
                 <input
                   type="number"
                   placeholder="1"
-                  name="quantity"
                   value={newItem.quantity}
                   onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 />
               </div>
+
+              <div>
+                <label className="text-xs font-bold block mb-1">Unit</label>
+                <select
+                  value={newItem.unit}
+                  onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
+                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+                >
+                  <option value="pc">pc</option>
+                  <option value="kg">kg</option>
+                  <option value="pack">pack</option>
+                  <option value="bottle">bottle</option>
+                  <option value="liter">liter</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-center">
               <button
                 type="button"
                 onClick={handleAddItem}
-                className="bg-button px-4 py-2 rounded-xl font-bold text-white shadow-card hover:opacity-80 transition-opacity"
+                className="h-30 w-full bg-button rounded-xl font-bold text-white shadow-card hover:opacity-80 transition-opacity flex items-center justify-center"
               >
-                <Plus size={20} />
+                <Plus size={22} />
               </button>
             </div>
           </div>
@@ -225,16 +245,27 @@ export default function ReceiptForm({ data, onChange }) {
           <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
             Certification
           </h3>
+
           <label className="text-xs font-bold block mb-1">Certified Correct By</label>
-          <input
-            name="name"
+          <select
             ref={registerInput}
             value={data.certifiedBy?.name || ""}
-            onChange={(e) => onChange({ ...data, certifiedBy: { name: e.target.value } })}
+            onChange={(e) =>
+              onChange({
+                ...data,
+                certifiedBy: { name: e.target.value },
+              })
+            }
             onKeyDown={handleArrowNavigation}
-            placeholder="Certifier Name"
             className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-          />
+          >
+            <option value="">Choose a member...</option>
+            {councilMembers.map((m, i) => (
+              <option key={i} value={m.name}>
+                {m.name}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
     </div>
