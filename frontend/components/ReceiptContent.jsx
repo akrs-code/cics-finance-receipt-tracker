@@ -137,7 +137,7 @@ export const ReceiptContent = ({ data }) => {
                 </View>
                 <View style={styles.row}>
                     <Text style={styles.cellLabel}>Position: {data.position}</Text>
-                    <Text style={styles.cellLabelLast}>No.: {data.receipt_no}</Text>
+                    <Text style={styles.cellLabelLast}>  No.{data.receipt_no ? `CENRR-${data.receipt_no}` : ""}</Text>
                 </View>
 
                 <View style={styles.tableHeader}>
@@ -192,7 +192,7 @@ export const ReceiptContent = ({ data }) => {
 
                 <View style={styles.sigRow}>
                     <View style={styles.sigCell}><Text style={{ fontWeight: "bold" }}>Printed Name:</Text></View>
-                    <View style={styles.sigCellName}><Text>{data.certifiedBy?.name}</Text></View>
+                    <View style={styles.sigCellName}><Text>{data.certifiedBy}</Text></View>
                     <View style={styles.sigCellLastName}>
                         <Text>
                             Sittie Aisha C.{"\n"}Abdulmanan
