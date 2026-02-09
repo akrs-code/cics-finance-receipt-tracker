@@ -3,6 +3,8 @@ import { useReceipt } from "../hooks/useReceipts";
 import { Link, useNavigate } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import BulkDownloadPDF from "../components/BulkDownloadPDF.jsx";
+// Import the Settings icon
+import { Settings as SettingsIcon } from "lucide-react"; 
 
 export default function Dashboard() {
   const { fetchReceipts, receipts } = useReceipt();
@@ -75,7 +77,7 @@ export default function Dashboard() {
       <div className="w-full max-w-5xl flex flex-wrap gap-4 items-center justify-start mx-auto">
         <input
           placeholder="Search Name..."
-          className="flex-1 min-w-37.5px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
+          className="flex-1 min-w-37.5 px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
           value={filters.name}
           onChange={(e) => setFilters({ ...filters, name: e.target.value })}
         />
@@ -109,6 +111,16 @@ export default function Dashboard() {
         >
           {sortOrder === "asc" ? "↑ Oldest" : "↓ Newest"}
         </button>
+
+        {/* --- SETTINGS BUTTON ADDED HERE --- */}
+        <Link
+          to="/settings"
+          className="p-2.5 rounded-xl text-neutral-400 shadow-card bg-button hover:bg-neutral-800 hover:text-white transition-all flex items-center justify-center"
+          title="Settings"
+        >
+          <SettingsIcon size={20} />
+        </Link>
+        {/* ---------------------------------- */}
 
         <Link
           to="/receipt"
@@ -169,7 +181,7 @@ export default function Dashboard() {
                 <div className="col-span-2 text-white font-medium">{receipt.name}</div>
                 <div className="col-span-2 text-neutral-400">{receipt.date}</div>
                 <div className="col-span-1 font-bold text-white">₱{(receipt.totalAmount || 0).toLocaleString()}</div>
-                <div className="col-span-2 text-neutral-300 italic">{receipt.certifiedBy?.name || "-"}</div>
+                <div className="col-span-2 text-neutral-300 italic">{receipt.certifiedBy || "-"}</div>
                 <div className="col-span-2 text-neutral-400 truncate">{receipt.purpose || "-"}</div>
                 <div className="col-span-1">
                   <span className="px-2 py-1 bg-neutral-700 rounded-md text-[10px] uppercase font-bold text-neutral-300">
