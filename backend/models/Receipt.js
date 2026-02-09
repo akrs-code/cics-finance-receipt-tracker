@@ -6,9 +6,6 @@ const ItemSchema = new mongoose.Schema({
     quantity: { type: Number, required: true, min: 1 }
 });
 
-const CertifiedBySchema = new mongoose.Schema({
-    name: { type: String, default: "" },
-});
 
 const ReceiptSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -19,7 +16,7 @@ const ReceiptSchema = new mongoose.Schema({
     category: { type: String, default: "Uncategorized", },
     purpose: { type: String, required: true },
     totalAmount: { type: Number, required: true },
-    certifiedBy: { type: CertifiedBySchema, default: {} },
+    certifiedBy: { type: String, required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
 
 }, { timestamps: true })
