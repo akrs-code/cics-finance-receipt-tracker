@@ -101,6 +101,17 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 2,
     },
+    sigCellLastName: {
+        flex: 1,
+        padding: 2,
+        textAlign: "center"
+    },
+    sigCellName: {
+        flex: 1,
+        borderRight: BORDER_WIDTH,
+        textAlign: "center",
+        padding: 2,
+    },
 });
 
 export const ReceiptContent = ({ data }) => {
@@ -137,7 +148,7 @@ export const ReceiptContent = ({ data }) => {
                 {items.map((item, i) => (
                     <View key={i} style={styles.tableRow}>
                         <Text style={[styles.colParticular, { fontWeight: "normal" }]}>
-                           {item.quantity} {item.unit || 'pc'} {item.name}
+                            {item.quantity} {item.unit || 'pc'} {item.name}
                         </Text>
                         <Text style={[styles.colAmount, { fontWeight: "normal" }]}>
                             {(Number(item.amount) * Number(item.quantity)).toFixed(2)}
@@ -181,8 +192,12 @@ export const ReceiptContent = ({ data }) => {
 
                 <View style={styles.sigRow}>
                     <View style={styles.sigCell}><Text style={{ fontWeight: "bold" }}>Printed Name:</Text></View>
-                    <View style={styles.sigCell}></View>
-                    <View style={styles.sigCellLast}></View>
+                    <View style={styles.sigCellName}><Text>{data.certifiedBy?.name}</Text></View>
+                    <View style={styles.sigCellLastName}>
+                        <Text>
+                            Sittie Aisha C.{"\n"}Abdulmanan
+                        </Text>
+                    </View>
                 </View>
 
                 <View style={styles.sigRow}>
