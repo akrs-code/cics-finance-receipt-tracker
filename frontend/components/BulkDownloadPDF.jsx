@@ -13,7 +13,7 @@ const PAPER_CONFIGS = {
   }
 };
 
-const RECEIPT_MARGIN = 15;
+const RECEIPT_MARGIN = 40;
 const RECEIPT_WIDTH = 240;
 const RECEIPT_HEIGHT = 400;
 
