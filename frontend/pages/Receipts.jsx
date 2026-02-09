@@ -16,7 +16,7 @@ export default function Receipts() {
     purpose: "",
     category: "",
     items: [],
-    certifiedBy: { name: "" },
+    certifiedBy: "",
   });
 
   const [error, setError] = useState("");
