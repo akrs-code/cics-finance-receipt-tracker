@@ -1,3 +1,4 @@
+import Settings from '../components/Settings.jsx';
 import { AuthProvider } from '../context/AuthContext.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 import Dashboard from "../pages/Dashboard.jsx"
@@ -13,6 +14,7 @@ const App = () => {
         <Route path='/' element={<Login />} />
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/receipt" element={<Receipts />} />
           <Route path="/receipt/:id" element={<ReceiptDetails />} />
         </Route>
