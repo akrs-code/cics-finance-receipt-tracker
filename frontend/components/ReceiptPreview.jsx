@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRight: BORDER_WIDTH,
     textAlign: "center",
-    padding: 2,
+    padding: 1,
   },
   sigCellLast: {
     flex: 1,
