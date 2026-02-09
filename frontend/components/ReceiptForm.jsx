@@ -1,42 +1,27 @@
 import { useState, useRef, useEffect } from "react";
 import { SquareX, Plus } from "lucide-react";
+import { useSettings } from "../hooks/useSettings.js"; // Import your custom hook
 
 export default function ReceiptForm({ data, onChange }) {
-  const [newItem, setNewItem] = useState({ name: "", amount: "", quantity: "", unit: "pc" });
-  const [selectedSize, setSelectedSize] = useState("A4");
+  // Use dynamic settings from your hook
+  const { councilMembers, units } = useSettings();
+  
+  // Set default unit to the first dynamic unit available
+  const [newItem, setNewItem] = useState({ 
+    name: "", 
+    amount: "", 
+    quantity: "", 
+    unit: units[0] || "pc" 
+  });
+  
   const inputsRef = useRef([]);
 
-  const councilMembers = [
-    { name: "Amnisa D. Arsa", position: "Chief Minister" },
-    { name: "Nor-Ainie T. Macalatas", position: "Executive Secretary" },
-    { name: "Raisha M. Matonding", position: "Assistant Secretary" },
-    { name: "Janna M. Barsi", position: "Associate Justice" },
-    { name: "Alexsarah D.C. Racman", position: "Speaker of the Parliament" },
-    { name: "Peejay C. Patos", position: "DCS Society Head" },
-    { name: "Saibah H.O. Saidamen", position: "DIS Society Head" },
-    { name: "Norhadi M. Norodin", position: "CSRAW Commissioner" },
-    { name: "Sittie Aisha C. Abdulmanan", position: "Minister of Audit" },
-    { name: "Mohammad Hosni M. Palantig", position: "Minister of Public Affairs" },
-    { name: "Amal O. Sultan", position: "Minister of Finance" },
-    { name: "Hafsah R. Mangorangca", position: "Minister of Academic Affairs" },
-    { name: "Jehan Fatmah P. Radiamoda", position: "Minister of Sports and Recreation" },
-    { name: "Sarhan G. Mundig", position: "Minister of Press & Information" },
-    { name: "Honey Jane B. Mamac", position: "Minister of Documentation" },
-    { name: "Mohammad M. Camid", position: "Minister of Business Operation" },
-    { name: "Al-Banie M. Agakhan", position: "SSG Representative" },
-    { name: "John Warren A. Villarta", position: "SSG Representative" },
-    { name: "Mohammad Zulkifli S. Macadato", position: "Deputy Minister of Public Affairs" },
-    { name: "Omar O. Batocala", position: "Deputy Minister of Academic Affairs" },
-    { name: "Asnawi L. Hassan", position: "Deputy Minister of Press & Information" },
-    { name: "Rahimah H.R. H.Jamel", position: "Deputy Minister of Documentation" },
-    { name: "Fahad M. Baraiman", position: "Deputy Minister of Business Operation" },
-    { name: "Hafiz M. Daison", position: "Technical Director" },
-    { name: "Crysttel Angeline B. Ali", position: "Public Information Officer" },
-    { name: "Abdul-khaliq R. Solaiman", position: "Operation Officer of Press & Information" },
-    { name: "Nasrimah L. Nasroden", position: "Secretary of Financial Records" },
-    { name: "Norfaida P. Abdulcadir", position: "Secretary of Funds and Expenditures" },
-    { name: "Wassim D. Alikhan", position: "Associate Minister of Business Operation" },
-  ];
+  // Ensure newItem.unit updates if the dynamic units list changes
+  useEffect(() => {
+    if (units.length > 0 && !units.includes(newItem.unit)) {
+      setNewItem(prev => ({ ...prev, unit: units[0] }));
+    }
+  }, [units]);
 
   const registerInput = (el) => {
     if (el && !inputsRef.current.includes(el)) {
@@ -47,6 +32,12 @@ export default function ReceiptForm({ data, onChange }) {
   useEffect(() => {
     inputsRef.current = [];
   }, [data.items?.length]);
+
+  const blockInvalidChar = (e) => {
+    if (["e", "E", "-", "+"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
 
   const handleArrowNavigation = (e) => {
     const index = inputsRef.current.indexOf(e.target);
@@ -62,16 +53,25 @@ export default function ReceiptForm({ data, onChange }) {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    onChange({ ...data, [name]: value });
+    const { name, value, type } = e.target;
+    let sanitizedValue = value;
+
+    if (type === "text" && name !== "receipt_no") {
+      sanitizedValue = value.replace(/[^a-zA-Z\s]/g, "");
+    } else if (type === "number") {
+      sanitizedValue = value === "" ? "" : Math.abs(Number(value)).toString();
+    }
+
+    onChange({ ...data, [name]: sanitizedValue });
   };
 
   const handleMemberSelect = (e) => {
-    const selectedMember = councilMembers.find(m => m.name === e.target.value);
+    const selectedMember = councilMembers.find((m) => m.name === e.target.value);
     onChange({
       ...data,
       name: selectedMember?.name || "",
-      position: selectedMember?.position || ""
+      position: selectedMember?.position || "",
+      certifiedBy: selectedMember?.name || "",
     });
   };
 
@@ -79,13 +79,17 @@ export default function ReceiptForm({ data, onChange }) {
     if (!newItem.name || !newItem.amount || !newItem.quantity) return;
     onChange({
       ...data,
-      items: [...(data.items || []), {
-        ...newItem,
-        amount: Number(newItem.amount),
-        quantity: Number(newItem.quantity)
-      }],
+      items: [
+        ...(data.items || []),
+        {
+          ...newItem,
+          amount: Math.abs(Number(newItem.amount)),
+          quantity: Math.abs(Number(newItem.quantity)),
+        },
+      ],
     });
-    setNewItem({ name: "", amount: "", quantity: "", unit: "pc" });
+    // Reset to the first available dynamic unit
+    setNewItem({ name: "", amount: "", quantity: "", unit: units[0] || "pc" });
   };
 
   const handleRemoveItem = (index) => {
@@ -112,8 +116,11 @@ export default function ReceiptForm({ data, onChange }) {
                 className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
               >
                 <option value="">Choose a member...</option>
+                {/* DYNAMIC MEMBERS MAPPING */}
                 {councilMembers.map((m, i) => (
-                  <option key={i} value={m.name}>{m.name}</option>
+                  <option key={i} value={m.name}>
+                    {m.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -139,7 +146,9 @@ export default function ReceiptForm({ data, onChange }) {
 
             {["receipt_no", "date", "purpose", "category"].map((field) => (
               <div key={field}>
-                <label className="text-xs font-bold block mb-1 capitalize">{field.replace("_", " ")}</label>
+                <label className="text-xs font-bold block mb-1 capitalize">
+                  {field.replace("_", " ")}
+                </label>
                 <input
                   name={field}
                   type={field === "date" ? "date" : "text"}
@@ -167,7 +176,9 @@ export default function ReceiptForm({ data, onChange }) {
                 <input
                   placeholder="Item name"
                   value={newItem.name}
-                  onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, name: e.target.value.replace(/[^a-zA-Z\s]/g, "") })
+                  }
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 />
               </div>
@@ -177,8 +188,11 @@ export default function ReceiptForm({ data, onChange }) {
                 <input
                   type="number"
                   placeholder="0.00"
+                  onKeyDown={blockInvalidChar}
                   value={newItem.amount}
-                  onChange={(e) => setNewItem({ ...newItem, amount: e.target.value })}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, amount: e.target.value.replace(/[^0-9.]/g, "") })
+                  }
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 />
               </div>
@@ -189,8 +203,12 @@ export default function ReceiptForm({ data, onChange }) {
                 <input
                   type="number"
                   placeholder="1"
+                  min="1"
+                  onKeyDown={blockInvalidChar}
                   value={newItem.quantity}
-                  onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
+                  onChange={(e) =>
+                    setNewItem({ ...newItem, quantity: e.target.value.replace(/[^0-9]/g, "") })
+                  }
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 />
               </div>
@@ -202,11 +220,10 @@ export default function ReceiptForm({ data, onChange }) {
                   onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 >
-                  <option value="pc">pc</option>
-                  <option value="kg">kg</option>
-                  <option value="pack">pack</option>
-                  <option value="bottle">bottle</option>
-                  <option value="liter">liter</option>
+                  {/* DYNAMIC UNITS MAPPING */}
+                  {units.map((u, i) => (
+                    <option key={i} value={u}>{u}</option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -224,12 +241,17 @@ export default function ReceiptForm({ data, onChange }) {
 
           <ul className="mt-6 space-y-2">
             {(data.items || []).map((item, index) => (
-              <li key={index} className="flex justify-between items-center bg-button/40 p-3 rounded-xl border border-neutral-800">
+              <li
+                key={index}
+                className="flex justify-between items-center bg-button/40 p-3 rounded-xl border border-neutral-800"
+              >
                 <div className="text-sm">
                   <span className="font-bold text-white">{item.quantity}x</span> {item.name}
                 </div>
                 <div className="flex items-center gap-4">
-                  <span className="font-bold text-white text-sm">₱{(item.amount * item.quantity).toFixed(2)}</span>
+                  <span className="font-bold text-white text-sm">
+                    ₱{(item.amount * item.quantity).toFixed(2)}
+                  </span>
                   <SquareX
                     onClick={() => handleRemoveItem(index)}
                     className="text-red-500 cursor-pointer hover:opacity-70"
@@ -245,27 +267,13 @@ export default function ReceiptForm({ data, onChange }) {
           <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
             Certification
           </h3>
-
           <label className="text-xs font-bold block mb-1">Certified Correct By</label>
-          <select
-            ref={registerInput}
-            value={data.certifiedBy?.name || ""}
-            onChange={(e) =>
-              onChange({
-                ...data,
-                certifiedBy: { name: e.target.value },
-              })
-            }
-            onKeyDown={handleArrowNavigation}
-            className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-          >
-            <option value="">Choose a member...</option>
-            {councilMembers.map((m, i) => (
-              <option key={i} value={m.name}>
-                {m.name}
-              </option>
-            ))}
-          </select>
+          <input
+            readOnly
+            value={data.certifiedBy || ""}
+            placeholder="Select a member above..."
+            className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
+          />
         </div>
       </div>
     </div>
