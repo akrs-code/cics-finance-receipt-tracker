@@ -16,7 +16,7 @@ export const createReceipt = async (req, res) => {
             }
         }
 
-         const totalAmount = items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.amount)), 0);
+        const totalAmount = items.reduce((sum, item) => sum + (Number(item.quantity) * Number(item.amount)), 0);
 
 
         const receipt = await Receipt.create({
@@ -27,8 +27,8 @@ export const createReceipt = async (req, res) => {
             items,
             totalAmount,
             purpose,
-           category: category || "Uncategorized",
-            certifiedBy: certifiedBy || {},
+            category: category || "Uncategorized",
+            certifiedBy,
             createdBy: req.user._id,
         })
 
@@ -98,23 +98,17 @@ export const updateReceipt = async (req, res) => {
         if (date) receipt.date = date;
         if (receipt_no) receipt.receipt_no = receipt_no;
         if (certifiedBy) receipt.certifiedBy = certifiedBy;
+        if (purpose) receipt.purpose = purpose;
+        if (category) receipt.category = category;
+
         if (items && items.length > 0) {
-            for (const item of items) {
-                if (!item.name || item.amount == null || item.quantity == null) {
-                    return res.status(400).json({ error: "Each item must have name, amount, and quantity" });
-                }
-            }
-            if (items && items.length > 0) {
-                receipt.items = items;
-                receipt.totalAmount = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
-            }
-            if (purpose) receipt.purpose = purpose;
-            if (category) receipt.category = category;
-
-            await receipt.save();
-
-            return res.status(200).json({ message: "Receipt Updated Successfully", receipt })
+            receipt.items = items;
+            receipt.totalAmount = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
         }
+
+        await receipt.save();
+        return res.status(200).json({ message: "Updated", receipt });
+
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
