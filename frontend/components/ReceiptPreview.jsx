@@ -218,8 +218,8 @@ const ReceiptPDF = ({ data }) => {
 
 export default function ReceiptPreview({ data }) {
   return (
-    <div style={{ width: "100%", padding: "20px", display: "flex", justifyContent: "center" }}>
-      <PDFViewer style={{ width: "100%", height: "80vh" }}>
+    <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <PDFViewer style={{ width: "100%", height: "65vh" }}>
         <ReceiptPDF data={data} />
       </PDFViewer>
     </div>
