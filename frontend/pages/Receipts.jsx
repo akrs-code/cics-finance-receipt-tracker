@@ -99,10 +99,8 @@ export default function Receipts() {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-neutral-800/50 custom-scrollbar p-4 flex justify-center">
-              <div
-                className={`transition-all duration-300 origin-top transform scale-[0.95] lg:scale-100 shadow-2xl mb-10`}
-              >
+            <div className="flex-1 overflow-y-auto shadow-2xl custom-scrollbar flex justify-center">
+              <div>
                 <ReceiptPreview data={receiptData} />
               </div>
             </div>
