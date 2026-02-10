@@ -1,12 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { SquareX, Plus } from "lucide-react";
-import { useSettings } from "../hooks/useSettings.js"; // Import your custom hook
+import { useSettings } from "../hooks/useSettings.js";
 
 export default function ReceiptForm({ data, onChange }) {
-  // Use dynamic settings from your hook
   const { councilMembers, units } = useSettings();
-  
-  // Set default unit to the first dynamic unit available
   const [newItem, setNewItem] = useState({ 
     name: "", 
     amount: "", 
@@ -16,7 +13,6 @@ export default function ReceiptForm({ data, onChange }) {
   
   const inputsRef = useRef([]);
 
-  // Ensure newItem.unit updates if the dynamic units list changes
   useEffect(() => {
     if (units.length > 0 && !units.includes(newItem.unit)) {
       setNewItem(prev => ({ ...prev, unit: units[0] }));
@@ -88,7 +84,6 @@ export default function ReceiptForm({ data, onChange }) {
         },
       ],
     });
-    // Reset to the first available dynamic unit
     setNewItem({ name: "", amount: "", quantity: "", unit: units[0] || "pc" });
   };
 
@@ -116,7 +111,6 @@ export default function ReceiptForm({ data, onChange }) {
                 className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
               >
                 <option value="">Choose a member...</option>
-                {/* DYNAMIC MEMBERS MAPPING */}
                 {councilMembers.map((m, i) => (
                   <option key={i} value={m.name}>
                     {m.name}
