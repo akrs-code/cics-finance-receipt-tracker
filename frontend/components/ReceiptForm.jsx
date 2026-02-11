@@ -3,14 +3,14 @@ import { SquareX, Plus } from "lucide-react";
 import { useSettings } from "../hooks/useSettings.js";
 
 export default function ReceiptForm({ data, onChange }) {
-  const { councilMembers, units } = useSettings();
-  const [newItem, setNewItem] = useState({ 
-    name: "", 
-    amount: "", 
-    quantity: "", 
-    unit: units[0] || "pc" 
+  const { councilMembers, audits, units } = useSettings();
+  const [newItem, setNewItem] = useState({
+    name: "",
+    amount: "",
+    quantity: "",
+    unit: units[0] || "pc"
   });
-  
+
   const inputsRef = useRef([]);
 
   useEffect(() => {
@@ -62,12 +62,23 @@ export default function ReceiptForm({ data, onChange }) {
   };
 
   const handleMemberSelect = (e) => {
-    const selectedMember = councilMembers.find((m) => m.name === e.target.value);
+    const selectedMember = councilMembers.find((member) => member.name === e.target.value);
     onChange({
       ...data,
       name: selectedMember?.name || "",
       position: selectedMember?.position || "",
       certifiedBy: selectedMember?.name || "",
+    });
+  };
+
+  const handleAuditSelect = (e) => {
+    const selected = audits.find(a => a.name === e.target.value);
+
+    onChange({
+      ...data,
+      auditBy: selected
+        ? { name: selected.name, position: selected.position }
+        : null
     });
   };
 
@@ -100,8 +111,8 @@ export default function ReceiptForm({ data, onChange }) {
           <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
             Receipt Info
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
               <label className="text-xs font-bold block mb-1">Select Council Member</label>
               <select
                 ref={registerInput}
@@ -111,9 +122,9 @@ export default function ReceiptForm({ data, onChange }) {
                 className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
               >
                 <option value="">Choose a member...</option>
-                {councilMembers.map((m, i) => (
-                  <option key={i} value={m.name}>
-                    {m.name}
+                {councilMembers.map((member, index) => (
+                  <option key={index} value={member.name}>
+                    {member.name}
                   </option>
                 ))}
               </select>
@@ -155,6 +166,20 @@ export default function ReceiptForm({ data, onChange }) {
                 />
               </div>
             ))}
+            <div>
+              <label className="text-xs font-bold block mb-1">Select Semester</label>
+              <select
+                name="semester"
+                onChange={handleChange}
+                ref={registerInput}
+                value={data.semester || ""}
+                onKeyDown={handleArrowNavigation}
+                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+              >
+                <option value="1st">1st Semester</option>
+                <option value="2nd">2nd Semester</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -163,8 +188,7 @@ export default function ReceiptForm({ data, onChange }) {
             Items
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
               <div>
                 <label className="text-xs font-bold block mb-1">Item</label>
                 <input
@@ -190,8 +214,7 @@ export default function ReceiptForm({ data, onChange }) {
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 />
               </div>
-            </div>
-            <div className="space-y-4">
+
               <div>
                 <label className="text-xs font-bold block mb-1">Quantity</label>
                 <input
@@ -214,19 +237,18 @@ export default function ReceiptForm({ data, onChange }) {
                   onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
                   className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
                 >
-                  {/* DYNAMIC UNITS MAPPING */}
-                  {units.map((u, i) => (
-                    <option key={i} value={u}>{u}</option>
+                  {units.map((unit, i) => (
+                    <option key={i} value={unit}>{unit}</option>
                   ))}
                 </select>
               </div>
-            </div>
+       
 
-            <div className="flex justify-center">
+            <div className="flex col-end-5">
               <button
                 type="button"
                 onClick={handleAddItem}
-                className="h-30 w-full bg-button rounded-xl font-bold text-white shadow-card hover:opacity-80 transition-opacity flex items-center justify-center"
+                className="w-full px-4 py-2 bg-button rounded-xl font-bold text-white shadow-card hover:opacity-80 transition-opacity flex items-center justify-center"
               >
                 <Plus size={22} />
               </button>
@@ -257,17 +279,56 @@ export default function ReceiptForm({ data, onChange }) {
           </ul>
         </div>
 
-        <div>
-          <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
-            Certification
-          </h3>
-          <label className="text-xs font-bold block mb-1">Certified Correct By</label>
-          <input
-            readOnly
-            value={data.certifiedBy || ""}
-            placeholder="Select a member above..."
-            className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
-          />
+        <h3 className="text-sm font-bold mb-4 border-b-2 border-neutral-700 pb-2 uppercase tracking-wider">
+          Certification
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div>
+            <label className="text-xs font-bold block mb-1">Select Auditor</label>
+            <select
+              ref={registerInput}
+              value={data.auditBy?.name || ""}
+              onChange={handleAuditSelect}
+              onKeyDown={handleArrowNavigation}
+              className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+            >
+              <option value="">Choose Audit...</option>
+              {audits.map((member, index) => (
+                <option key={index} value={member.name}>
+                  {member.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs font-bold block mb-1">Name</label>
+            <input
+              readOnly
+              value={data.auditBy?.name || ""}
+              placeholder="Select Audit's name..."
+              className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
+            />
+          </div>
+
+          <div>
+            <label className="text-xs font-bold block mb-1">Position</label>
+            <input
+              readOnly
+              value={data.auditBy?.position || ""}
+              placeholder="Select Audit's position..."
+              className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
+            />
+          </div>
+           <div>
+              <label className="text-xs font-bold block mb-1">Certified By</label>
+              <input
+                readOnly
+                value={data.certifiedBy || ""}
+                placeholder="Select a member above..."
+                className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
+              />
+            </div>
         </div>
       </div>
     </div>
