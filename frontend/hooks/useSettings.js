@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export function useSettings() {
     const [councilMembers, setCouncilMembers] = useState(() => {
@@ -33,6 +33,12 @@ export function useSettings() {
         { name: "Norfaida P. Abdulcadir", position: "Secretary of Funds and Expenditures" },
         { name: "Wassim D. Alikhan", position: "Associate Minister of Business Operation" }];
     });
+    const [audits, setAudits] = useState(() => {
+        const saved = localStorage.getItem("Audits");
+        return saved ? JSON.parse(saved) : [
+            { name: "Sittie Aisha C. Abdulmanan", position: "Minister of Audit" },
+        ]
+    });
 
     const [units, setUnits] = useState(() => {
         const saved = localStorage.getItem("units");
@@ -43,11 +49,14 @@ export function useSettings() {
         setCouncilMembers(newList);
         localStorage.setItem("councilMembers", JSON.stringify(newList));
     };
-
+    const updateAudits = (newList) => {
+        setAudits(newList);
+        localStorage.setItem("Audits", JSON.stringify(newList));
+    };
     const updateUnits = (newList) => {
         setUnits(newList);
         localStorage.setItem("units", JSON.stringify(newList));
     };
 
-    return { councilMembers, units, updateMembers, updateUnits };
+    return { councilMembers, units, audits, updateMembers, updateUnits, updateAudits };
 }
