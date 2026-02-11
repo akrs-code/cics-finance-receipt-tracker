@@ -193,17 +193,14 @@ export const ReceiptContent = ({ data }) => {
                 <View style={styles.sigRow}>
                     <View style={styles.sigCell}><Text style={{ fontWeight: "bold" }}>Printed Name:</Text></View>
                     <View style={styles.sigCellName}><Text>{data.certifiedBy}</Text></View>
-                    <View style={styles.sigCellLastName}>
-                        <Text>
-                            Sittie Aisha C.{"\n"}Abdulmanan
-                        </Text>
+                    <View style={styles.sigCellLastName}><Text>{data.auditBy?.name}</Text>
                     </View>
                 </View>
 
                 <View style={styles.sigRow}>
                     <View style={styles.sigCell}></View>
                     <View style={styles.sigCell}><Text style={{ textAlign: "center", marginTop: 5 }}>Payee</Text></View>
-                    <View style={styles.sigCellLast}><Text style={{ textAlign: "center", marginTop: 5 }}>Minister of Audit</Text></View>
+                    <View style={styles.sigCellLast}><Text style={{ textAlign: "center", marginTop: 5 }}>{data.auditBy?.position}</Text></View>
                 </View>
 
                 <View style={[styles.sigRow, { borderBottom: 0 }]}>
