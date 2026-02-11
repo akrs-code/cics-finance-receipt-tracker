@@ -4,9 +4,18 @@ export const createReceipt = async (req, res) => {
     try {
         if (!req.user) return res.status(400).json({ error: "Unauthorized Access" })
 
-        const { name, position, date, receipt_no, items, purpose, certifiedBy, category } = req.body;
-
-        if (!name || !position || !date || !receipt_no || !items || items.length === 0 || !purpose || !category) {
+        const { name, position, date, receipt_no, items, purpose, certifiedBy, category, semester, auditBy } = req.body;
+        if (
+            !name ||
+            !position ||
+            !date ||
+            !receipt_no ||
+            !items?.length ||
+            !purpose ||
+            !semester ||
+            !auditBy?.name ||
+            !auditBy?.position
+        ) {
             return res.status(400).json({ error: "All fields are required" });
         }
 
@@ -29,6 +38,8 @@ export const createReceipt = async (req, res) => {
             purpose,
             category: category || "Uncategorized",
             certifiedBy,
+            semester,
+            auditBy,
             createdBy: req.user._id,
         })
 
@@ -48,6 +59,7 @@ export const getReceipts = async (req, res) => {
         if (req.query.receipt_no) filter.receipt_no = req.query.receipt_no;
         if (req.query.name) filter.name = req.query.name;
         if (req.query.category) filter.category = req.query.category;
+        if (req.query.semester) filter.semester = req.query.semester;
 
         const receipts = await Receipt.find(filter).sort({ createdAt: -1 });
 
@@ -84,7 +96,7 @@ export const getReceiptById = async (req, res) => {
 export const updateReceipt = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, position, date, receipt_no, items, purpose, certifiedBy, category } = req.body
+        const { name, position, date, receipt_no, items, purpose, certifiedBy, category, semester, auditBy } = req.body
 
         if (!id.match(/^[0-9a-fA-F]{24}$/)) {
             return res.status(401).json({ error: "Invalid Receipt ID" })
@@ -100,6 +112,8 @@ export const updateReceipt = async (req, res) => {
         if (certifiedBy) receipt.certifiedBy = certifiedBy;
         if (purpose) receipt.purpose = purpose;
         if (category) receipt.category = category;
+        if (semester) receipt.semester = semester;
+        if (auditBy) receipt.auditBy = auditBy;
 
         if (items && items.length > 0) {
             receipt.items = items;
