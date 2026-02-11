@@ -74,7 +74,7 @@ export default function Dashboard() {
 
       <hr className="w-full max-w-5xl border-neutral-800" />
 
-      <div className="w-full max-w-5xl flex flex-wrap gap-4 items-center justify-start mx-auto">
+      <div className="w-full max-w-6xl flex flex-wrap gap-4 items-center justify-start mx-auto">
         <input
           placeholder="Search Name..."
           className="flex-1 min-w-37.5 px-4 py-2 rounded-xl shadow-card text-sm bg-button text-white placeholder:text-neutral-400 focus:ring-2 ring-card outline-none"
@@ -156,10 +156,9 @@ export default function Dashboard() {
             <div className="col-span-1 text-left">No.</div>
             <div className="col-span-2 text-left">Council Member</div>
             <div className="col-span-2 text-left">Date</div>
-            <div className="col-span-1 text-left">Amount</div>
+            <div className="col-span-2 text-left">Amount</div>
             <div className="col-span-2 text-left">Certified By</div>
-            <div className="col-span-2 text-left">Purpose</div>
-            <div className="col-span-1 text-left">Category</div>
+            <div className="col-span-2 text-left">Category</div>
           </div>
 
           {sortedReceipts.length > 0 ? (
@@ -180,10 +179,9 @@ export default function Dashboard() {
                 <div className="col-span-1 text-neutral-400">#{receipt.receipt_no}</div>
                 <div className="col-span-2 text-white font-medium">{receipt.name}</div>
                 <div className="col-span-2 text-neutral-400">{receipt.date}</div>
-                <div className="col-span-1 font-bold text-white">₱{(receipt.totalAmount || 0).toLocaleString()}</div>
+                <div className="col-span-2 font-bold text-white">₱{(receipt.totalAmount || 0).toLocaleString()}</div>
                 <div className="col-span-2 text-neutral-300 italic">{receipt.certifiedBy || "-"}</div>
-                <div className="col-span-2 text-neutral-400 truncate">{receipt.purpose || "-"}</div>
-                <div className="col-span-1">
+                <div className="col-span-2">
                   <span className="px-2 py-1 bg-neutral-700 rounded-md text-[10px] uppercase font-bold text-neutral-300">
                     {receipt.category || "Misc"}
                   </span>
