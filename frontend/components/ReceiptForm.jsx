@@ -176,8 +176,9 @@ export default function ReceiptForm({ data, onChange }) {
                 onKeyDown={handleArrowNavigation}
                 className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
               >
-                <option value="1st">1st Semester</option>
-                <option value="2nd">2nd Semester</option>
+                <option value="" disabled>Choose Semester...</option>
+                <option value="1st Semester">1st Semester</option>
+                <option value="2nd Semester">2nd Semester</option>
               </select>
             </div>
           </div>
@@ -189,60 +190,60 @@ export default function ReceiptForm({ data, onChange }) {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-              <div>
-                <label className="text-xs font-bold block mb-1">Item</label>
-                <input
-                  placeholder="Item name"
-                  value={newItem.name}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, name: e.target.value.replace(/[^a-zA-Z\s]/g, "") })
-                  }
-                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Item</label>
+              <input
+                placeholder="Item name"
+                value={newItem.name}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, name: e.target.value.replace(/[^a-zA-Z\s]/g, "") })
+                }
+                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-bold block mb-1">Amount</label>
-                <input
-                  type="number"
-                  placeholder="0.00"
-                  onKeyDown={blockInvalidChar}
-                  value={newItem.amount}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, amount: e.target.value.replace(/[^0-9.]/g, "") })
-                  }
-                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Amount</label>
+              <input
+                type="number"
+                placeholder="0.00"
+                onKeyDown={blockInvalidChar}
+                value={newItem.amount}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, amount: e.target.value.replace(/[^0-9.]/g, "") })
+                }
+                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-bold block mb-1">Quantity</label>
-                <input
-                  type="number"
-                  placeholder="1"
-                  min="1"
-                  onKeyDown={blockInvalidChar}
-                  value={newItem.quantity}
-                  onChange={(e) =>
-                    setNewItem({ ...newItem, quantity: e.target.value.replace(/[^0-9]/g, "") })
-                  }
-                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-bold block mb-1">Quantity</label>
+              <input
+                type="number"
+                placeholder="1"
+                min="1"
+                onKeyDown={blockInvalidChar}
+                value={newItem.quantity}
+                onChange={(e) =>
+                  setNewItem({ ...newItem, quantity: e.target.value.replace(/[^0-9]/g, "") })
+                }
+                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+              />
+            </div>
 
-              <div>
-                <label className="text-xs font-bold block mb-1">Unit</label>
-                <select
-                  value={newItem.unit}
-                  onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
-                  className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
-                >
-                  {units.map((unit, i) => (
-                    <option key={i} value={unit}>{unit}</option>
-                  ))}
-                </select>
-              </div>
-       
+            <div>
+              <label className="text-xs font-bold block mb-1">Unit</label>
+              <select
+                value={newItem.unit}
+                onChange={(e) => setNewItem({ ...newItem, unit: e.target.value })}
+                className="w-full px-4 py-2 rounded-xl text-sm bg-button text-white shadow-card focus:outline-none"
+              >
+                {units.map((unit, i) => (
+                  <option key={i} value={unit}>{unit}</option>
+                ))}
+              </select>
+            </div>
+
 
             <div className="flex col-end-5">
               <button
@@ -320,15 +321,15 @@ export default function ReceiptForm({ data, onChange }) {
               className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
             />
           </div>
-           <div>
-              <label className="text-xs font-bold block mb-1">Certified By</label>
-              <input
-                readOnly
-                value={data.certifiedBy || ""}
-                placeholder="Select a member above..."
-                className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
-              />
-            </div>
+          <div>
+            <label className="text-xs font-bold block mb-1">Certified By</label>
+            <input
+              readOnly
+              value={data.certifiedBy || ""}
+              placeholder="Select a member above..."
+              className="w-full px-4 py-2 rounded-xl text-sm bg-button/50 text-neutral-400 cursor-not-allowed shadow-card placeholder:text-neutral-600"
+            />
+          </div>
         </div>
       </div>
     </div>
