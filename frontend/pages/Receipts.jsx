@@ -32,7 +32,7 @@ export default function Receipts() {
     setLoading(true);
 
     try {
-      if (!receiptData.name || !receiptData.position || !receiptData.date || !receiptData.receipt_no || !receiptData.items.length || !receiptData.purpose || !semester || !receiptData.auditBy?.name || !receiptData.auditBy?.position) {
+      if (!receiptData.name || !receiptData.position || !receiptData.date || !receiptData.receipt_no || !receiptData.items.length || !receiptData.purpose || !receiptData.semester || !receiptData.auditBy?.name || !receiptData.auditBy?.position) {
         setError("Missing required fields.");
         setLoading(false);
         return;
