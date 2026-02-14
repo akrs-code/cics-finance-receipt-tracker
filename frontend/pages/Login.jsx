@@ -1,16 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, user } = useAuth(); // Assuming 'user' holds the session
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -31,6 +37,8 @@ export default function Login() {
     }
   };
 
+  if (user) return null;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] font-inter antialiased">
       <form
@@ -43,7 +51,7 @@ export default function Login() {
             alt="Logo"
             className="h-24 w-24 object-contain -mt-20 mb-4"
           />
-          <h2 className="text-xl font-semibold text-white tracking-tight uppercase">System Login</h2>
+          <h2 className="text-xl font-semibold text-white tracking-tight uppercase">RECEIPT TRACKER</h2>
           <p className="text-xs text-neutral-500 mt-1">Enter your credentials to continue</p>
         </div>
 
