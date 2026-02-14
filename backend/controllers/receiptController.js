@@ -54,14 +54,16 @@ export const createReceipt = async (req, res) => {
 
 export const getReceipts = async (req, res) => {
     try {
-        const filter = {};
+        const filter = { createdBy: req.user._id };
+
         if (req.query.date) filter.date = req.query.date;
         if (req.query.receipt_no) filter.receipt_no = req.query.receipt_no;
         if (req.query.name) filter.name = req.query.name;
         if (req.query.category) filter.category = req.query.category;
         if (req.query.semester) filter.semester = req.query.semester;
 
-        const receipts = await Receipt.find(filter).sort({ createdAt: -1 });
+        const receipts = await Receipt.find(filter)
+            .sort({ createdAt: -1 });
 
         return res.status(200).json({
             count: receipts.length,
@@ -76,34 +78,37 @@ export const getReceipts = async (req, res) => {
 export const getReceiptById = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(401).json({ error: "Invalid receipt ID" });
-        }
-        const receipt = await Receipt.findById(id);
-        if (!receipt) return res.status(401).json({ error: "Receipt not found" });
 
-        res.status(200).json({
-            message: "Receipt found",
-            receipt
-        })
+        const receipt = await Receipt.findOne({
+            _id: id,
+            createdBy: req.user._id
+        });
+
+        if (!receipt) {
+            return res.status(404).json({ error: "Receipt not found" });
+        }
+
+        res.status(200).json({ receipt });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message })
+        return res.status(500).json({ error: error.message });
     }
+};
 
-}
 
 export const updateReceipt = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, position, date, receipt_no, items, purpose, certifiedBy, category, semester, auditBy } = req.body
+        const { name, position, date, receipt_no, items, purpose, certifiedBy, category, semester, auditBy } = req.body;
 
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(401).json({ error: "Invalid Receipt ID" })
-        };
+        const receipt = await Receipt.findOne({
+            _id: id,
+            createdBy: req.user._id
+        });
 
-        const receipt = await Receipt.findById(id)
-        if (!receipt) return res.status(401).json({ error: "Receipt Not Found" });
+        if (!receipt) {
+            return res.status(404).json({ error: "Receipt not found" });
+        }
 
         if (name) receipt.name = name;
         if (position) receipt.position = position;
@@ -115,40 +120,42 @@ export const updateReceipt = async (req, res) => {
         if (semester) receipt.semester = semester;
         if (auditBy) receipt.auditBy = auditBy;
 
-        if (items && items.length > 0) {
+        if (items?.length > 0) {
             receipt.items = items;
-            receipt.totalAmount = items.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
+            receipt.totalAmount = items.reduce(
+                (sum, item) => sum + (item.amount * item.quantity),
+                0
+            );
         }
 
         await receipt.save();
+
         return res.status(200).json({ message: "Updated", receipt });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message })
+        return res.status(500).json({ error: error.message });
     }
-}
+};
+
 
 export const deleteReceipt = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
 
-        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({ error: "Invalid Receipt ID" })
-        };
+        const receipt = await Receipt.findOneAndDelete({
+            _id: id,
+            createdBy: req.user._id
+        });
 
-        const receipt = await Receipt.findById(id);
-        if (!receipt) return res.status(404).json({ error: "Receipt Not Found" })
-
-        if (req.user && receipt.createdBy.toString() !== req.user._id.toString()) {
-            return res.status(401).json({ error: "Forbidden: cannot delete this receipt" });
+        if (!receipt) {
+            return res.status(404).json({ error: "Receipt not found" });
         }
 
-        await receipt.deleteOne();
-
-        return res.status(200).json({ message: "Receipt Deleted Successfully" })
+        return res.status(200).json({
+            message: "Receipt Deleted Successfully"
+        });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message })
+        return res.status(500).json({ error: error.message });
     }
-
-}
+};
