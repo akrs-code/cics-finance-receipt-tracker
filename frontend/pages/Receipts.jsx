@@ -44,6 +44,7 @@ export default function Receipts() {
       };
 
       await addReceipt(finalData);
+      alert("Receipt Successfully Added!")
       navigate("/");
     } catch (err) {
       setError(err.message || "PROTOCOL ERROR: DATA COMMIT FAILED");
