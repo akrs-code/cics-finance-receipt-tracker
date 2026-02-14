@@ -205,8 +205,8 @@ export const ReceiptContent = ({ data }) => {
 
                 <View style={[styles.sigRow, { borderBottom: 0 }]}>
                     <View style={styles.sigCell}></View>
-                    <View style={styles.sigCell}><Text>Date:</Text></View>
-                    <View style={styles.sigCellLast}><Text>Date:</Text></View>
+                    <View style={styles.sigCell}><Text>Date:{data.date}</Text></View>
+                    <View style={styles.sigCellLast}><Text>Date:{data.date}</Text></View>
                 </View>
             </View>
         </View>
