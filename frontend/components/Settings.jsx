@@ -39,7 +39,7 @@ export default function Settings() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleConfirmDelete}
-        title={deleteConfig.identifier ? `Confirm Purge: ${deleteConfig.identifier.toUpperCase()}` : ""}
+        title={deleteConfig.identifier ? `Confirm Delete: ${deleteConfig.identifier.toUpperCase()}` : ""}
       />
 
       <header className="w-full max-w-7xl flex items-center justify-between mb-10">
