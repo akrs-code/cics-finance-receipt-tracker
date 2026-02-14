@@ -4,9 +4,9 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.post("/submit", authMiddleware, createReceipt);
-router.get("/all", getReceipts);
-router.get("/:id", getReceiptById);
-router.patch("/:id", updateReceipt);
+router.get("/all", authMiddleware, getReceipts);
+router.get("/:id", authMiddleware, getReceiptById);
+router.patch("/:id", authMiddleware, updateReceipt);
 router.delete("/:id", authMiddleware, deleteReceipt);
 
 export default router
