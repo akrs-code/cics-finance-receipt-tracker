@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
 import receiptRoutes from "./routes/receiptRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
 import mongoose from "mongoose";
 import cors from 'cors';
 
@@ -16,6 +17,7 @@ app.use(cors({
 app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/receipt", receiptRoutes);
+app.use("/api/settings", settingsRoutes);
 
 app.get('/', (req, res) => {
     res.send('Backend is running!');
