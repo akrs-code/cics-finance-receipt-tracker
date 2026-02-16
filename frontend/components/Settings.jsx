@@ -30,7 +30,9 @@ export default function Settings() {
       if (deleteConfig.type === "audit") await handleDeleteAudit(deleteConfig.index);
       if (deleteConfig.type === "unit") await handleDeleteUnit(deleteConfig.identifier);
       setIsModalOpen(false);
-    } catch (err) { console.error("Deletion failed:", err); }
+    } catch (err) { 
+      console.error("Deletion failed:", err); 
+    }
   };
 
   return (
