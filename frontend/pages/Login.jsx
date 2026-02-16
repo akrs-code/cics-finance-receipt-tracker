@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react"; // Added useEffect
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
-  const { login, user } = useAuth(); // Assuming 'user' holds the session
+  const { login, user } = useAuth(); 
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
