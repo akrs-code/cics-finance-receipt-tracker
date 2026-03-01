@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import BulkDownloadPDF from "../components/BulkDownloadPDF.jsx";
 import Modal from "../components/Modal";
-import SemesterSelection from "./SemesterSelection"; 
+import SemesterSelection from "./SemesterSelection";
 import { Settings as SettingsIcon, Trash2, Search, Download, Plus, Filter, ArrowUpDown, Hash } from "lucide-react";
 
 export default function Dashboard() {
@@ -17,7 +17,11 @@ export default function Dashboard() {
   const [receiptToDelete, setReceiptToDelete] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => { fetchReceipts(); }, []);
+  useEffect(() => {
+    if (filters.semester) {
+      fetchReceipts({ semester: filters.semester });
+    }
+  }, [filters.semester]);
 
   const getSemester = (dateString) => {
     const month = new Date(dateString).getMonth() + 1;
@@ -56,9 +60,10 @@ export default function Dashboard() {
   const handleSelectAll = (e) => setSelected(e.target.checked ? sortedReceipts.map(r => r._id) : []);
   const toggleSelect = (id) => setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
   const openDeleteModal = (e, receipt) => { e.stopPropagation(); setReceiptToDelete(receipt); setIsModalOpen(true); };
+  const handleSemesterSelect = (semester) => setFilters({ date: "", receipt_no: "", name: "", category: "", semester });
 
   if (!filters.semester) {
-    return <SemesterSelection onSelect={(id) => setFilters({ ...filters, semester: id })} />;
+    return <SemesterSelection onSelect={handleSemesterSelect} />;
   }
 
   return (
@@ -115,7 +120,6 @@ export default function Dashboard() {
           ))}
         </section>
 
-        {/* FILTERS SECTION */}
         <section className="bg-[#111111] border border-neutral-800 rounded-2xl p-4 flex flex-wrap gap-4 items-center shadow-2xl">
           <div className="relative flex-1 min-w-62.5">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" size={16} />
@@ -173,7 +177,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* TABLE SECTION */}
         <section className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden shadow-2xl">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-250">
