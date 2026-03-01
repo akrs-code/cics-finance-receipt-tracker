@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
-  const { login, user } = useAuth(); 
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: "", password: "" });
@@ -13,9 +13,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    if (user) {
-      navigate("/dashboard", { replace: true });
-    }
+    if (user) navigate("/dashboard", { replace: true });
   }, [user, navigate]);
 
   const handleChange = (e) => {
@@ -29,7 +27,6 @@ export default function Login() {
 
     try {
       await login(form);
-      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.error || "Invalid email or password");
     } finally {
@@ -51,8 +48,12 @@ export default function Login() {
             alt="Logo"
             className="h-24 w-24 object-contain -mt-20 mb-4"
           />
-          <h2 className="text-xl font-semibold text-white tracking-tight uppercase">RECEIPT TRACKER</h2>
-          <p className="text-xs text-neutral-500 mt-1">Enter your credentials to continue</p>
+          <h2 className="text-xl font-semibold text-white tracking-tight uppercase">
+            RECEIPT TRACKER
+          </h2>
+          <p className="text-xs text-neutral-500 mt-1">
+            Enter your credentials to continue
+          </p>
         </div>
 
         <div className="space-y-4">
@@ -77,7 +78,7 @@ export default function Login() {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"} 
+                type={showPassword ? "text" : "password"}
                 name="password"
                 placeholder="••••••••"
                 required
@@ -106,7 +107,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full mt-8 bg-white text-black py-2.5 rounded-lg font-bold text-sm hover:bg-neutral-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed transform active:scale-[0.98] flex items-center justify-center gap-2"
+          className="w-full mt-8 bg-white text-black py-2.5 rounded-lg font-bold text-sm hover:bg-neutral-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {loading ? (
             <>

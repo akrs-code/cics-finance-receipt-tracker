@@ -17,7 +17,11 @@ export default function Dashboard() {
   const [receiptToDelete, setReceiptToDelete] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => { fetchReceipts(); }, []);
+  useEffect(() => {
+  if (filters.semester) {
+    fetchReceipts(filters.semester);
+  }
+}, [filters.semester]);
 
   const getSemester = (dateString) => {
     const month = new Date(dateString).getMonth() + 1;
