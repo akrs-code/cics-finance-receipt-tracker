@@ -5,16 +5,29 @@ import { PDFDownloadLink } from "@react-pdf/renderer";
 import BulkDownloadPDF from "../components/BulkDownloadPDF.jsx";
 import Modal from "../components/Modal";
 import SemesterSelection from "./SemesterSelection";
-import { Settings as SettingsIcon, Trash2, Search, Download, Plus, Filter, ArrowUpDown, Hash } from "lucide-react";
+import { 
+  Settings as SettingsIcon, 
+  Trash2, 
+  Search, 
+  Download, 
+  Plus, 
+  Filter, 
+  ArrowUpDown, 
+  Hash, 
+  Check, 
+  Loader2 
+} from "lucide-react";
 
 export default function Dashboard() {
-  const { fetchReceipts, receipts, removeReceipt } = useReceipt();
+  const { fetchReceipts, receipts, removeReceipt, editReceipt } = useReceipt();
   const [filters, setFilters] = useState({ date: "", receipt_no: "", name: "", category: "", semester: "" });
   const [selected, setSelected] = useState([]);
   const [sortOrder, setSortOrder] = useState("desc");
   const [paperSize, setPaperSize] = useState("LONG");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [receiptToDelete, setReceiptToDelete] = useState(null);
+  const [updatingId, setUpdatingId] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,6 +39,19 @@ export default function Dashboard() {
   const getSemester = (dateString) => {
     const month = new Date(dateString).getMonth() + 1;
     return (month >= 1 && month <= 6) ? "1st Semester" : "2nd Semester";
+  };
+
+  const handleUpdateNo = async (id, newNo, currentNo) => {
+    if (!newNo || newNo === currentNo.toString()) return;
+
+    setUpdatingId(id);
+    try {
+      await editReceipt(id, { receipt_no: newNo });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const filteredReceipts = useMemo(() => {
@@ -121,7 +147,7 @@ export default function Dashboard() {
         </section>
 
         <section className="bg-[#111111] border border-neutral-800 rounded-2xl p-4 flex flex-wrap gap-4 items-center shadow-2xl">
-          <div className="relative flex-1 min-w-62.5">
+          <div className="relative flex-1 min-w-[250px]">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-600" size={16} />
             <input
               placeholder="SEARCH BY NAME..."
@@ -179,7 +205,7 @@ export default function Dashboard() {
 
         <section className="bg-[#111111] border border-neutral-800 rounded-2xl overflow-hidden shadow-2xl">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-250">
+            <table className="w-full text-left border-collapse min-w-[1000px]">
               <thead>
                 <tr className="bg-[#1a1a1a] border-b border-neutral-800 text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-500">
                   <th className="p-5 text-center w-16">
@@ -213,10 +239,31 @@ export default function Dashboard() {
                         className="w-4 h-4 rounded border-neutral-700 bg-neutral-900 accent-white cursor-pointer"
                       />
                     </td>
-                    <td className="p-5 font-mono text-[11px] text-neutral-500">#{receipt.receipt_no}</td>
+                    <td className="p-5 font-mono text-[11px]" onClick={(e) => e.stopPropagation()}>
+                      <div className="relative flex items-center gap-1 group/edit w-fit">
+                        <span className="text-neutral-700">#</span>
+                        <input
+                          type="text"
+                          key={receipt.receipt_no}
+                          defaultValue={receipt.receipt_no}
+                          onKeyDown={(e) => e.key === "Enter" && e.target.blur()}
+                          onBlur={(e) => handleUpdateNo(receipt._id, e.target.value, receipt.receipt_no)}
+                          className="bg-transparent border-b border-transparent hover:border-neutral-700 focus:border-white focus:outline-none w-16 transition-all py-1 text-neutral-400 focus:text-white"
+                        />
+                        <div className="absolute -right-6 flex items-center justify-center w-4">
+                          {updatingId === receipt._id ? (
+                            <Loader2 size={12} className="animate-spin text-neutral-600" />
+                          ) : (
+                            <Check size={12} className="opacity-0 group-focus-within/edit:opacity-100 text-green-500 transition-opacity" />
+                          )}
+                        </div>
+                      </div>
+                    </td>
                     <td className="p-5 font-bold text-[13px] text-neutral-200 uppercase">{receipt.name}</td>
                     <td className="p-5 font-mono text-[11px] text-neutral-500">{receipt.date}</td>
-                    <td className="p-5 font-bold text-white tabular-nums">₱{(receipt.totalAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                    <td className="p-5 font-bold text-white tabular-nums">
+                      ₱{(receipt.totalAmount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                    </td>
                     <td className="p-5">
                       <span className="px-3 py-1 bg-[#0a0a0a] border border-neutral-800 rounded-md text-[9px] font-bold uppercase tracking-wider text-neutral-400">
                         {receipt.category || "Unclassified"}
